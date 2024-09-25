@@ -1,0 +1,56 @@
+Parent Entity - Child Entity --- OwnerSide - InverseSide Açıklama
+UserEntity.java (Parent Entity ve Inverse Side):
+
+@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+@JsonBackReference
+private List<NoteTemplateEntity> userNoteTemplates = new ArrayList<>();
+NoteTemplateEntity.java (Child Entity ve Owner Side):
+
+@ManyToOne
+@JsonManagedReference
+private UserEntity user;
+UserEntity ve NoteTemplateEntity arasındaki ilişkiyi tanımlarken kullanılan terimler, bu iki entity arasındaki ilişkiyi nasıl yönettiğimizi anlamamıza yardımcı olur.
+
+1. Parent Entity (Ebeveyn Entity) ve Child Entity (Çocuk Entity):
+Parent Entity:
+
+Genellikle OneToMany veya OneToOne ilişkisinin "ana" tarafıdır.
+Bu taraf, diğer tarafa (alt entity'ye) sahiplik eder veya onu kontrol eder.
+Bu senaryoda UserEntity bir "Parent Entity" olarak kabul edilir çünkü bir UserEntity birden fazla NoteTemplateEntity'ye sahip olabilir.
+Child Entity:
+
+ManyToOne veya ManyToMany ilişkisinde genellikle "ilişkiye sahip olan" taraftır.
+Yani, bu entity başka bir entity'ye ait olabilir.
+Bu durumda NoteTemplateEntity, "Child Entity" olarak kabul edilir çünkü her bir NoteTemplateEntity, bir UserEntity'ye aittir.
+2. Owner Side (Sahip Olan Taraf) ve Inverse Side (Ters Taraf):
+Owner Side (Sahip Olan Taraf):
+
+Bu taraf, ilişkideki foreign key (FK) sütununu içerir ve bu nedenle ilişkinin "sahibi" dir.
+ilişkiyi yönetir
+Hibernate'e hangi entitylerin birbirine bağlı olduğunu bildirir.
+NoteTemplateEntity owner side'dır çünkü user_id FK sı bu tabloda bulunur.
+Inverse Side (Ters Taraf):
+
+Bu taraf, ilişkide FK sütununu içermez.
+İlişkinin ters tarafı ve genellikle mappedBy ile tanımlı.
+ilişkiyi yönetmez
+ancak ilişki hakkında bilgi sahibi olur.
+UserEntity inverse side'dır çünkü mappedBy = "user" ile NoteTemplateEntity tarafında ilişkiyi tersine bağlar.
+Açıklama:
+UserEntity:
+
+parent entity'dir,
+çünkü NoteTemplateEntity'ler ona aittir ve birden fazla NoteTemplateEntity'yi tutar.
+userNoteTemplates listesini içerir ve mappedBy = "user" ile NoteTemplateEntity'de tanımlanan ilişkiyi referans alır.
+Bu, UserEntity'nin inverse side (ters taraf) olarak hareket ettiğini gösterir. çünkü ilişkiyi mappedBy ile tersine çevirir ve ilişkide foreign key içermez.
+FK yok ancak ilişki hakkında bilgi sahibidir.
+NoteTemplateEntity:
+
+child entity'dir ve aynı zamanda owner side'dır
+çünkü UserEntity ile olan ilişkisini user_id foreign key'i üzerinden yönetir.
+user değişkeniyle UserEntity'ye ait olduğunu belirtir.
+Buradaki @ManyToOne anotasyonu, bu tablonun FK (user_id) içerdiğini, boylece owner side (sahip olan taraf) olduğunu gösterir.
+kısaca:
+Parent → ana entity, iliskiyi kontrol eden taraf. Child → iliskiye sahip olan taraf, her bir entitysi baska bir entitye aittir.
+
+Owner side → sahip olan taraf, FK icerir bu yuzden ilişkinin "sahibi" dir, iliskiyi yonetir, Hibernate e hangi entityler birbirne baglı onu soyler Inverse side → FK sutunu yok, iliskinin ters tarafıdır ve genelde mappedBy ile belirtilir, bu taraf, ilişkiyi yönetmez ancak ilişki hakkında bilgi sahibi olur.
