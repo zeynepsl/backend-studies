@@ -1,4 +1,4 @@
-package com.zeynep.study_cases.model;
+package com.zeynep.study_cases.model.query;
 
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.PathMetadata;
@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.PathInits;
 import com.querydsl.core.types.dsl.StringPath;
+import com.zeynep.study_cases.model.BookEntity;
 
 import javax.annotation.processing.Generated;
 

@@ -1,8 +1,10 @@
-package com.zeynep.study_cases.model;
+package com.zeynep.study_cases.model.query;
 
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.PathMetadata;
 import com.querydsl.core.types.dsl.*;
+import com.zeynep.study_cases.model.AuthorEntity;
+import com.zeynep.study_cases.model.BookEntity;
 
 import javax.annotation.processing.Generated;
 

@@ -4,8 +4,8 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zeynep.study_cases.model.AuthorEntity;
 import com.zeynep.study_cases.model.BookEntity;
-import com.zeynep.study_cases.model.QAuthorEntity;
-import com.zeynep.study_cases.model.QBookEntity;
+import com.zeynep.study_cases.model.query.QAuthorEntity;
+import com.zeynep.study_cases.model.query.QBookEntity;
 import com.zeynep.study_cases.repository.AuthorRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
@@ -17,9 +17,6 @@ import java.util.List;
 
 @Service
 public class AuthorBookService {
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     private final AuthorRepository authorRepository;
 
@@ -45,16 +42,20 @@ public class AuthorBookService {
         authorRepository.saveAll(Arrays.asList(author1, author2, author3));
     }
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public List<Tuple> findAuthors(){
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
         QAuthorEntity author = QAuthorEntity.authorEntity;
         QBookEntity book = QBookEntity.bookEntity;
-        List<Tuple> distinct = queryFactory.select(author.id, author.name)
+        List<Tuple> tuple = queryFactory.select(author.id, author.name, book.title)
                 .from(author)
                 .leftJoin(author.books, book)
+                .groupBy(author.id, book.title)
                 .fetch();
 
-        return distinct;
+        return tuple;
     }
 
 

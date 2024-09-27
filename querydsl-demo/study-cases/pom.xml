@@ -45,24 +45,9 @@
 
         <dependency>
             <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-core</artifactId>
-            <version>5.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
             <version>5.0.0</version>
             <classifier>jakarta</classifier>
-        </dependency>
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-sql</artifactId>
-            <version>5.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-sql-spring</artifactId>
-            <version>5.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
