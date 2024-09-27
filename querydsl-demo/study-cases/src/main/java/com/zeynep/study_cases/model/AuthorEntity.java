@@ -5,24 +5,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-public class Book {
+public class AuthorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private Author author;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<BookEntity> books;
 
-    public Book(String title, Author author) {
-        this.title = title;
-        this.author = author;
+    public AuthorEntity(String name) {
+        this.name = name;
     }
+
 }
 
