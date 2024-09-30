@@ -59,8 +59,7 @@ public class AuthorBookService {
     public List<AuthorDto> getAuthorsWithBooksOptimized() {
         List<AuthorEntity> authors = queryFactory
                 .selectFrom(qAuthor)
-                .leftJoin(qAuthor.books, qBook)
-                .fetchJoin()
+                .leftJoin(qAuthor.books, qBook).fetchJoin()
                 .fetch();
         return authors.stream()
                 .map(mapper::mapEntityToAuthorDto)
