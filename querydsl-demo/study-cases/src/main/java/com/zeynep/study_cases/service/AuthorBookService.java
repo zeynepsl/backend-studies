@@ -2,8 +2,11 @@ package com.zeynep.study_cases.service;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.zeynep.study_cases.mapper.DtoMapper;
 import com.zeynep.study_cases.model.AuthorEntity;
 import com.zeynep.study_cases.model.BookEntity;
+import com.zeynep.study_cases.model.dto.AuthorDto;
+import com.zeynep.study_cases.model.dto.BookDto;
 import com.zeynep.study_cases.model.query.QAuthorEntity;
 import com.zeynep.study_cases.model.query.QBookEntity;
 import com.zeynep.study_cases.repository.AuthorRepository;
@@ -19,13 +22,20 @@ import java.util.List;
 public class AuthorBookService {
 
     private final AuthorRepository authorRepository;
+    private final DtoMapper mapper;
+    QAuthorEntity qAuthor;
+    QBookEntity qBook;
+    @PersistenceContext
+    private EntityManager entityManager;
+    private JPAQueryFactory queryFactory;
 
-    public AuthorBookService(AuthorRepository authorRepository) {
+    public AuthorBookService(AuthorRepository authorRepository, DtoMapper mapper) {
         this.authorRepository = authorRepository;
+        this.mapper = mapper;
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         AuthorEntity author1 = new AuthorEntity("Author 1");
         AuthorEntity author2 = new AuthorEntity("Author 2");
         AuthorEntity author3 = new AuthorEntity("Author 3");
@@ -40,23 +50,88 @@ public class AuthorBookService {
         author3.setBooks(List.of(book4));
 
         authorRepository.saveAll(Arrays.asList(author1, author2, author3));
+
+        queryFactory = new JPAQueryFactory(entityManager);
+        qAuthor = QAuthorEntity.authorEntity;
+        qBook = QBookEntity.bookEntity;
     }
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    public List<Tuple> findAuthors(){
-        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-        QAuthorEntity author = QAuthorEntity.authorEntity;
-        QBookEntity book = QBookEntity.bookEntity;
-        List<Tuple> tuple = queryFactory.select(author.id, author.name, book.title)
-                .from(author)
-                .leftJoin(author.books, book)
-                .groupBy(author.id, book.title)
+    public List<AuthorDto> getAuthorsWithBooksOptimized() {
+        List<AuthorEntity> authors = queryFactory
+                .selectFrom(qAuthor)
+                .leftJoin(qAuthor.books, qBook)
+                .fetchJoin()
                 .fetch();
-
-        return tuple;
+        return authors.stream()
+                .map(mapper::mapEntityToAuthorDto)
+                .toList();
     }
 
+    public List<AuthorDto> getAuthorsWithBooks() {
+        List<AuthorDto> authorDtos = allAuthorQuery();
+        for (AuthorDto authorDto : authorDtos) {
+            List<BookDto> booksOfAuthor = booksByAuthorQuery(authorDto.getId());
+            authorDto.setBookDtos(booksOfAuthor);
+        }
+        return authorDtos;
+    }
+
+    public List<AuthorDto> allAuthorQuery() {
+        List<Tuple> tuples = queryFactory.select(qAuthor.id, qAuthor.name)
+                .from(qAuthor)
+                .fetch();
+        return tuples.stream()
+                .map(mapper::mapTupleToAuthorDto)
+                .toList();
+    }
+
+    public List<BookDto> booksByAuthorQuery(Long authorId) {
+        List<Tuple> tuples = queryFactory.select(qBook.id, qBook.title, qBook.author.id)
+                .from(qBook)
+                .join(qBook.author, qAuthor)
+                .where(qBook.author.id.eq(authorId))
+                .fetch();
+        return tuples.stream()
+                .map(mapper::mapTupleToBookDto)
+                .toList();
+    }
+
+    public List<AuthorDto> authorIdQuery(Long authorId) {
+        List<Tuple> tuples = queryFactory.select(qAuthor.id, qAuthor.name)
+                .from(qAuthor)
+                .where(qAuthor.id.eq(authorId))
+                .fetch();
+        return tuples.stream()
+                .map(mapper::mapTupleToAuthorDto)
+                .toList();
+    }
+
+    public AuthorDto getAuthorById(Long authorId) {
+        List<AuthorDto> authors = authorIdQuery(authorId);
+
+        if (!authors.isEmpty()) {
+            AuthorDto authorDto = authors.get(0);
+            List<BookDto> booksOfAuthor = booksByAuthorQuery(authorId);
+            authorDto.setBookDtos(booksOfAuthor);
+            return authorDto;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean isAuthorHasBooks(Long authorId) {
+        return queryFactory.selectOne()
+                .from(qBook)
+                .where(qBook.author.id.eq(authorId))
+                .fetchFirst() != null;
+    }
+
+    public List<Tuple> wildcardSearchOnBooks(String namePattern) {
+        return queryFactory.select(qBook.id, qBook.title)
+                .from(qBook)
+                .join(qBook.author, qAuthor)
+                .where(qBook.title.likeIgnoreCase(namePattern))
+                .fetch();
+    }
 
 }
