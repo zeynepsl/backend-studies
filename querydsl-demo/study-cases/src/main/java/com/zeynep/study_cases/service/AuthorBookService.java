@@ -34,7 +34,8 @@ public class AuthorBookService {
         this.mapper = mapper;
     }
 
-    @PostConstruct
+    //it is commented because it tests on StudyCasesApplicationTests test class
+    //@PostConstruct
     public void init() {
         AuthorEntity author1 = new AuthorEntity("Author 1");
         AuthorEntity author2 = new AuthorEntity("Author 2");
@@ -60,6 +61,7 @@ public class AuthorBookService {
         List<AuthorEntity> authors = queryFactory
                 .selectFrom(qAuthor)
                 .leftJoin(qAuthor.books, qBook).fetchJoin()
+                .orderBy(qAuthor.id.asc())
                 .fetch();
         return authors.stream()
                 .map(mapper::mapEntityToAuthorDto)
@@ -123,6 +125,13 @@ public class AuthorBookService {
                 .from(qBook)
                 .where(qBook.author.id.eq(authorId))
                 .fetchFirst() != null;
+    }
+
+    public AuthorEntity getFirstAuthorByName(){
+        return queryFactory
+                .selectFrom(qAuthor)
+                .orderBy(qAuthor.name.asc()) //get first author according to author name
+                .fetchFirst();//fetch first result
     }
 
     public List<Tuple> wildcardSearchOnBooks(String namePattern) {
