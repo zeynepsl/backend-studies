@@ -5,7 +5,10 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create
-    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
   datasource:
     url: jdbc:h2:mem:spring-security
     driver-class-name: org.h2.Driver
