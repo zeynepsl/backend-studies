@@ -37,9 +37,9 @@ public class AuthorBookService {
     //it is commented because it tests on StudyCasesApplicationTests test class
     //@PostConstruct
     public void init() {
-        AuthorEntity author1 = new AuthorEntity("Author 1");
-        AuthorEntity author2 = new AuthorEntity("Author 2");
-        AuthorEntity author3 = new AuthorEntity("Author 3");
+        AuthorEntity author1 = new AuthorEntity("Jane doe");
+        AuthorEntity author2 = new AuthorEntity("Linda Roe");
+        AuthorEntity author3 = new AuthorEntity("Johnny Doe");
 
         BookEntity book1 = new BookEntity("Book 1", author1);
         BookEntity book2 = new BookEntity("Book 2", author1);
