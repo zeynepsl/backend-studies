@@ -34,10 +34,9 @@ public class AuthorBookService {
         this.mapper = mapper;
     }
 
-    //it is commented because it tests on StudyCasesApplicationTests test class
-    //@PostConstruct
+    @PostConstruct
     public void init() {
-        AuthorEntity author1 = new AuthorEntity("Jane doe");
+        /*AuthorEntity author1 = new AuthorEntity("Jane doe");
         AuthorEntity author2 = new AuthorEntity("Linda Roe");
         AuthorEntity author3 = new AuthorEntity("Johnny Doe");
 
@@ -50,7 +49,7 @@ public class AuthorBookService {
         author2.setBooks(List.of(book3));
         author3.setBooks(List.of(book4));
 
-        authorRepository.saveAll(Arrays.asList(author1, author2, author3));
+        authorRepository.saveAll(Arrays.asList(author1, author2, author3));*/
 
         queryFactory = new JPAQueryFactory(entityManager);
         qAuthor = QAuthorEntity.authorEntity;
