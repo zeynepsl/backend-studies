@@ -1,0 +1,64 @@
+
+package com.soap.weather_forecast.model;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+
+
+/**
+ * <p>Java class for anonymous complex type</p>.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.</p>
+ * 
+ * <pre>{@code
+ * <complexType>
+ *   <complexContent>
+ *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       <sequence>
+ *         <element name="GetCitiesByCountryResult" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *       </sequence>
+ *     </restriction>
+ *   </complexContent>
+ * </complexType>
+ * }</pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "getCitiesByCountryResult"
+})
+@XmlRootElement(name = "GetCitiesByCountryResponse")
+public class GetCitiesByCountryResponse {
+
+    @XmlElement(name = "GetCitiesByCountryResult")
+    protected String getCitiesByCountryResult;
+
+    /**
+     * Gets the value of the getCitiesByCountryResult property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getGetCitiesByCountryResult() {
+        return getCitiesByCountryResult;
+    }
+
+    /**
+     * Sets the value of the getCitiesByCountryResult property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setGetCitiesByCountryResult(String value) {
+        this.getCitiesByCountryResult = value;
+    }
+
+}
